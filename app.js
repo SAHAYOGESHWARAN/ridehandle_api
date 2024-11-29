@@ -1,7 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { sequelize } = require('./config/db');
-
 require('dotenv').config();
 const { Client } = require('pg'); // Import pg Client for PostgreSQL
 
@@ -21,13 +19,12 @@ const client = new Client({
   host: process.env.DB_HOST, 
   database: process.env.DB_NAME, 
   password: process.env.DB_PASSWORD, 
-  port: process.env.DB_PORT 
+  port: process.env.DB_PORT || 5432,
 });
 
-
-sequelize.authenticate()
-  .then(() => console.log('Sequelize connected to PostgreSQL successfully'))
-  .catch(err => console.error('Sequelize connection error:', err));
+client.connect()
+  .then(() => console.log('PostgreSQL connected'))
+  .catch((err) => console.error('Error connecting to PostgreSQL:', err.stack));
 
 // Routes
 app.use('/api/auth', authRoutes);
